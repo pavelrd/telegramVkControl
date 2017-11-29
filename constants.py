@@ -1,4 +1,4 @@
-token = '428891181:AAHGDujx3a7NadZZ27SXZ1IXXsa8U3epoic'
+token = '428891181:AAHGDujx3a7NadZZZ27SXZ1IXXsa8U3epoicnevermindspoiledit'
 url = 'https://pp.userapi.com/c837733/v837733729/65055/AOEjlZYvIFA.jpg'
 runsNow = 0
 name = []
