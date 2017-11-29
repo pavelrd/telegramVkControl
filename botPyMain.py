@@ -8,7 +8,7 @@ import vk
 
 myBot = telebot.TeleBot(constants.token)
 print('bot-сервер запущен')
-app_id = '5580473'
+app_id = 'urVkAppId'
 global vkPassw
 global vkLogin
 vkPassw = ''
@@ -22,13 +22,13 @@ global referId
 
 @myBot.message_handler(commands=['start'])
 def start(message):
-       # if str(message.from_user.username) == 'northbaby':
-         #   myBot.send_message(message.chat.id, 'Привет, Полина \U0001F430 ')
-          #  myBot.send_message(message.chat.id, 'Я стал умнее! Полин, теперь я не ругаюсь матом :) ну то есть никакой обсценной лексики')
+       # if str(message.from_user.username) == 'blabla':
+         #   myBot.send_message(message.chat.id, 'Привет, blabla \U0001F430 ')
+          #  myBot.send_message(message.chat.id, 'Я стал умнее!')
            # myBot.send_message(message.chat.id,
                         #       'Теперь я научился показывать погоду! Спросите меня что-нибудь о ней! Например: "На улице холодно?"')
-       # elif str(message.from_user.username) == 'petukhovlive':
-          #  myBot.send_message(message.chat.id, 'Добрый день, Дмитрий! ')
+       # elif str(message.from_user.username) == 'wowwow':
+          #  myBot.send_message(message.chat.id, 'Добрый день, wowwow! ')
             #myBot.send_message(message.chat.id, 'ТЫ и так все знаешь обо мне')
         #else:
             sent = myBot.send_message(message.chat.id, 'Привет, {name}! '.format(name = str(message.from_user.username)))
