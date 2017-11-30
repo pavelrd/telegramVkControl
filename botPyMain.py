@@ -4,33 +4,12 @@ import datetime
 import random
 import requests
 import json
-import vk
 
 myBot = telebot.TeleBot(constants.token)
 print('bot-сервер запущен')
-app_id = 'urVkAppId'
-global vkPassw
-global vkLogin
-vkPassw = ''
-vkLogin = ''
-global usName
-global message
-global referId
-#global authRight
-#authRight = False
-
 
 @myBot.message_handler(commands=['start'])
 def start(message):
-       # if str(message.from_user.username) == 'blabla':
-         #   myBot.send_message(message.chat.id, 'Привет, blabla \U0001F430 ')
-          #  myBot.send_message(message.chat.id, 'Я стал умнее!')
-           # myBot.send_message(message.chat.id,
-                        #       'Теперь я научился показывать погоду! Спросите меня что-нибудь о ней! Например: "На улице холодно?"')
-       # elif str(message.from_user.username) == 'wowwow':
-          #  myBot.send_message(message.chat.id, 'Добрый день, wowwow! ')
-            #myBot.send_message(message.chat.id, 'ТЫ и так все знаешь обо мне')
-        #else:
             sent = myBot.send_message(message.chat.id, 'Привет, {name}! '.format(name = str(message.from_user.username)))
             myBot.send_message(message.chat.id, 'Кстати мне можно писать что угодно, я смогу ответить, но учтите, что все еще я бот в процессе разработки!')
             myBot.send_message(message.chat.id,
@@ -92,119 +71,6 @@ def showWeather(message):
         print('TypeError occured')
         myBot.send_message(message.chat.id, 'Что-то пошло не так! Попробуй запросить погоду позже...')
 
-@myBot.message_handler(commands=['vk'])
-def vk_login(msg):
-    if(authent(msg) == False):
-        login = myBot.send_message(msg.chat.id, 'Введите логин вк' )
-        myBot.register_next_step_handler(login , vk_pass)
-    else:
-        global vkPassw
-        password = vkPassw
-        vkPassw = password
-      #  print('login : ' + vkLogin)
-       # print('pass : ' + vkPassw)
-        msgToPost = myBot.send_message(msg.chat.id, 'Что запостить?')
-        myBot.register_next_step_handler(msgToPost, post_msg)
-
-
-def authent(msg):
-    global usName
-    hiMyNameIs = str(msg.from_user.username)
-    usName = hiMyNameIs
-    global vkLogin
-    global vkPassw
-    if ((vkLogin != '') and (vkPassw != '') and (vkPassw == constants.dictUsers.get(hiMyNameIs))):
-        return True
-    else:
-        return False
-
-
-def vk_pass(msg):
-    global vkLogin
-    login = msg.text
-    vkLogin = login
-    passw = myBot.send_message(msg.chat.id, 'Введите пароль вк' )
-    myBot.register_next_step_handler(passw, vk_auth)
-
-
-def vk_auth(msg):
-    global vkPassw
-    password = msg.text
-    vkPassw = password
-   # print('login : ' + vkLogin)
-   # print('pass : ' + vkPassw)
-    msgToPost = myBot.send_message(msg.chat.id, 'Что запостить?')
-    myBot.register_next_step_handler(msgToPost, post_msg)
-
-
-def post_msg(msg):
-    global usName
-    try:
-        msgToPost = msg.text
-        session = vk.AuthSession(app_id, vkLogin, vkPassw,
-                                     scope='wall, messages')
-        vk_api = vk.API(session)
-        myBot.send_message(msg.chat.id, 'Соединяемся с ВК...')
-        myBot.send_message(msg.chat.id, 'Авторизация завершена')
-
-        vk_api.wall.post(message = msgToPost)
-        myBot.send_message(msg.chat.id, 'Постим...')
-        myBot.send_message(msg.chat.id, 'Готово! Ты запостил : ' + msgToPost)
-        #myBot.send_message(msg.chat.id, 'Алсо теперь ты оффлайн...')
-        constants.dictUsers.update({usName:vkPassw})
-        constants.dictLogins.update({vkLogin:vkPassw})
-
-    except(vk.exceptions.VkAuthError, vk.exceptions.VkAPIError):
-        myBot.send_message(msg.chat.id, 'Неверный логин-пароль... или произошла другая ошибка')
-      #  print('логин : ' + vkLogin)
-      #  print('пароль : ' + vkPassw)
-
-
-@myBot.message_handler(commands=['offline'])
-def setHideMe(msg):
-    if authent(msg):
-        session = vk.AuthSession(app_id, vkLogin, vkPassw,
-                                 scope='wall, messages')
-        vk_api = vk.API(session)
-        vk_api.account.setOffline()
-        myBot.send_message(msg.chat.id, 'Алсо теперь ты оффлайн...')
-    else:
-        myBot.send_message(msg.chat.id, 'Вы не авторизованы...')
-
-@myBot.message_handler(commands=['message'])
-def sendMsg(msg):
-    if authent(msg):
-       sent = myBot.send_message(msg.chat.id, 'Напишите сообщение которое хотите отправить')
-       myBot.register_next_step_handler(sent, nextStep)
-    else:
-        myBot.send_message(msg.chat.id, 'Вы не авторизованы...')
-def nextStep(msg):
-       global messag
-       messag = msg.text
-       sent = myBot.send_message(msg.chat.id, 'Напишите короткую ссылку того кому хотите отправить (.../username) ')
-       myBot.register_next_step_handler(sent, nextStep2)
-def nextStep2(msg):
-    try:
-        global referId
-        referId = msg.text
-        session = vk.AuthSession(app_id, vkLogin, vkPassw,
-                                     scope='wall, messages')
-        vk_api = vk.API(session, v='5.62')
-        usId = vk_api.users.get(user_ids = referId)
-        #print(usId)
-        usId = str(usId).replace(']','')
-        usId = str(usId).replace('[','')
-        usId = str(usId).replace("'",'"')
-        print(usId)
-        parsedUsId = json.loads(usId)
-        #print(parsedUsId)
-        print('id : ' + str(parsedUsId['id']))
-        usId = str(parsedUsId['id'])
-        vk_api.messages.send(user_id = usId, message = str(messag))
-        myBot.send_message(msg.chat.id, 'Готово...')
-    except(TypeError,vk.exceptions.VkAuthError, vk.exceptions.VkAPIError):
-        print('TypeError')
-        myBot.send_message(msg.chat.id, 'Что то пошло не так...')
 
 @myBot.message_handler(content_types = ['text'])
 def listenAndReply(message):
@@ -285,7 +151,6 @@ def listenAndReply(message):
         myBot.send_message(message.chat.id, 'ошибка')
         print('TypeError')
 
-
 def isWeekEven(week):
     if (week % 2) == 0:
         return True
@@ -326,5 +191,5 @@ def parseJson(jsonStr):
 
 try:
     myBot.polling(none_stop=True)
-except (ConnectionAbortedError, ConnectionError, ConnectionRefusedError, ConnectionResetError,json.JSONDecodeError, TypeError, requests.exceptions.ReadTimeout):
+except (ConnectionAbortedError, ConnectionError, ConnectionRefusedError, ConnectionResetError, json.JSONDecodeError, TypeError, requests.exceptions.ReadTimeout):
     print('Error occurred')
