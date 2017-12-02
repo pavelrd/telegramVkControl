@@ -30,7 +30,7 @@ def vk_login(msg):
         global vkPassw
         password = vkPassw
         vkPassw = password
-        vkTeleBot.send_message(message.chat.id, 'Вы уже авторизованы')
+        vkTeleBot.send_message(msg.chat.id, 'Вы уже авторизованы')
 
 #функция проверки авторизации
 def authent(msg):
@@ -142,5 +142,7 @@ def nextStep2(msg):
         print('TypeError')
         vkTeleBot.send_message(msg.chat.id, 'Что то пошло не так...')
 
-
-vkTeleBot.polling(none_stop=True)
+try:
+    vkTeleBot.polling(none_stop=True)
+except(vkTeleBot.ApiException):
+    print('ApiException occured')
