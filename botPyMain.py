@@ -4,6 +4,7 @@ import datetime
 import random
 import requests
 import json
+import time
 
 myBot = telebot.TeleBot(constants.token)
 print('bot-сервер запущен')
@@ -188,8 +189,9 @@ def parseJson(jsonStr):
         return [identif, description ,temp]
     except (ConnectionAbortedError, ConnectionError, ConnectionRefusedError, ConnectionResetError, TypeError, json.JSONDecodeError,TypeError):
         print('Error occurred')
-
-try:
-    myBot.polling(none_stop=True)
-except (ConnectionAbortedError, ConnectionError, ConnectionRefusedError, ConnectionResetError, json.JSONDecodeError, TypeError, requests.exceptions.ReadTimeout):
-    print('Error occurred')
+while True:
+    try:
+        myBot.polling(none_stop=True)
+    except (ConnectionAbortedError, ConnectionError, ConnectionRefusedError, ConnectionResetError, json.JSONDecodeError, TypeError, requests.exceptions.ReadTimeout):
+        print('Error occurred')
+    time.sleep(1)
