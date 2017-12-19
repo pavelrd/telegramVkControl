@@ -20,8 +20,9 @@ def start(message):
 
 @myBot.message_handler(commands = ['stop'])
 def stop(message):
-        myBot.send_message(message.chat.id, 'До свидания, {name}!'.format(name = constants.name[len(constants.name)-1]))
-        print('{name} закончил использование бота!'.format(name = constants.name[len(constants.name)-1]))
+        if len(constants.name) >= 1:
+            myBot.send_message(message.chat.id, 'До свидания, {name}!'.format(name = constants.name[len(constants.name)-1]))
+            print('{name} закончил использование бота!'.format(name = constants.name[len(constants.name)-1]))
 
 @myBot.message_handler(commands = ['description'])
 def description(msg):
