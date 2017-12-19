@@ -191,7 +191,7 @@ def parseJson(jsonStr):
         print('Error occurred')
 while True:
     try:
-        myBot.polling(none_stop=True)
+        myBot.polling(none_stop=False)
     except (ConnectionAbortedError, ConnectionError, ConnectionRefusedError, ConnectionResetError, json.JSONDecodeError, TypeError, requests.exceptions.ReadTimeout):
         print('Error occurred')
     time.sleep(1)
